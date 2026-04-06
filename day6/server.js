@@ -1,9 +1,9 @@
 const app = require("./src/app")
-
+require("dotenv").config()
 const mongoose = require("mongoose")
 
 function connectToDb() {
-    mongoose.connect("mongodb+srv://vishu:gn1Xywi4vtrYPsMC@cluster0.nrrsbxp.mongodb.net/day-6")
+    mongoose.connect(process.env.MONGO_URI)
         .then(() => {
             console.log("database created")
         })
