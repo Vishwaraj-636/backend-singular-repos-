@@ -5,7 +5,7 @@ function App() {
   const [notes, setnotes] = useState([])
 
   function fetchNotes() {
-    axios.get("http://localhost:3000/api/notes")
+    axios.get("https://backend-singular-repos.onrender.com/api/notes")
       .then((res) => {
         setnotes(res.data.notes)
       })
@@ -24,7 +24,7 @@ function App() {
 
     // console.log(title, description)
 
-    axios.post("http://localhost:3000/api/notes", {
+    axios.post("https://backend-singular-repos.onrender.com/api/notes", {
       title: title,
       description: description
     })
@@ -37,7 +37,7 @@ function App() {
 
   function handleDelete(noteId) {
     // console.log(noteId)
-    axios.delete(`http://localhost:3000/api/notes/${noteId}`)
+    axios.delete(`https://backend-singular-repos.onrender.com/api/notes/${noteId}`)
       .then(res => {
 
         fetchNotes()
@@ -52,7 +52,7 @@ function App() {
 
     let ntId = notes[noteId - 1]._id
 
-    axios.patch(`http://localhost:3000/api/notes/${ntId}`, {
+    axios.patch(`https://backend-singular-repos.onrender.com/api/notes/${ntId}`, {
       description: description
     })
       .then(res => {
