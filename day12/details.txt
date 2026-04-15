@@ -11,6 +11,12 @@ Post:
     ->can see the feed
     ->like Post {collection types}
     ->save Post
+    {
+        caption:String,
+        image:String,
+        user:userId
+        createdAt:date-time
+    }
 
 User:
     ->followers
