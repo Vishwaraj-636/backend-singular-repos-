@@ -2,7 +2,6 @@ const userModel = require("../models/user.model")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 
-
 async function loginController(req, res) {
     const { email, username, password } = req.body
 
@@ -47,20 +46,7 @@ async function loginController(req, res) {
 async function registerController(req, res){
     const { email, username, password, bio, profileImage } = req.body
 
-    // const isUserExistByEmail = await userModel.findOne({ email })
-    // if (isUserExistByEmail) {
-    //     return res.status(409).json({
-    //         message:"user with this email already exist"
-    //     })
-    // }
-
-    // const isUserExistByUsername = await userModel.findOne({ username })
-    // if (isUserExistByUsername) {
-    //     return res.status(409).json({
-    //         message:"user with this username already exist"
-    //     })
-    // }
-
+   
     const isUserExist = await userModel.findOne({
         $or: [
             { username },
@@ -101,7 +87,22 @@ async function registerController(req, res){
     })
 }
 
+async function getMeController(req,res) {
+    const userId = req.user.id
+    const user = await userModel.findById(userId)
+    
+    res.status(200).json({
+        user: {
+            username: user.username,
+            email: user.email,
+            bio:user.bio,
+            profileImage: user.profileImage
+        }
+    })
+}
+
 module.exports = {
     registerController,
-    loginController
+    loginController,
+    getMeController
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import "../styles/form.scss"
 import axios from 'axios'
-
+// import { register } from '../services/auth.api';
 
 const Register = () => {
     const [username, setUsername] = useState("")
@@ -11,16 +11,8 @@ const Register = () => {
 
     async function handleSubmit(e) {
         e.preventDefault()
-        axios.post("http://localhost:3000/api/auth/register", {
-            username,
-            email,
-            password
-        }, {
-            withCredentials:true
-        })
-            .then(res => {
-                console.log(res.data)
-            })
+        // const response = await register(username, email, password)
+        // console.log(response)
     }
 
     return (

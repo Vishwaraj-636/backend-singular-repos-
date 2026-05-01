@@ -39,3 +39,8 @@ Users
 Notes
 - All endpoints that require a logged-in user use the `identifyUser` middleware (`src/middlewares/auth.middleware.js`).
 - The exact request and response body shapes are implemented in the controllers under `src/controllers`.
+
+## Revision history (API docs)
+
+- 2026-05-01: Clarified that the `GET /api/auth/get-me` endpoint can be used by frontend apps to restore the current user session on reload. Recommended that frontend axios clients use `withCredentials: true` when backend uses cookies for auth.
+
