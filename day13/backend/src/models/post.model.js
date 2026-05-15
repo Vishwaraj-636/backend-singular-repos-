@@ -10,9 +10,9 @@ const postSchema = new mongoose.Schema({
         required:[true,"imgUrl is required"]
     },
     user: {
-        ref: "users",
         type: mongoose.Schema.Types.ObjectId,
-        required:[true,"userId is required"]
+        ref: "User", // <-- This must perfectly match your user model name
+        required: [true, "userId is required"]
     }
 })
 
