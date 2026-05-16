@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import AppRoutes from './AppRoutes'
-import { RouterProvider} from 'react-router'
-import "./style.scss"
-import { AuthProvider } from './features/auth/auth.context.jsx';
+import {RouterProvider} from "react-router";
+import {router} from "./app.routes"
+import "./features/shared/global.scss"
 
-const App = () => {
+function App() {
+
   return (
-    <AuthProvider >
-      <AppRoutes />
-   </AuthProvider>
-  );
-};
+    <RouterProvider router={router}/>
+  )
+}
 
-export default App;
+export default App
