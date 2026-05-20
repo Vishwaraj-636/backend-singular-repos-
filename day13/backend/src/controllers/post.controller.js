@@ -7,110 +7,121 @@ const jwt = require("jsonwebtoken")
 // const cookies = require("cookie-parser")
 
 const imagekit = ImageKit({
-    privateKey: process.env.IMAGEKIT_PRIVATE_KEY
+  privateKey: process.env.IMAGEKIT_PRIVATE_KEY
 })
 
 async function createPostController(req, res) {
 
-    const file = await imagekit.files.upload({
-        file: await toFile(Buffer.from(req.file.buffer), 'file'),
-        fileName: "Test",
-        folder: "Cohort-2-insta-clone"
-    })
-    const post = await postModel.create({
-        caption: req.body.caption,
-        imgUrl: file.url,
-        user: req.user.id
-    })
+  const file = await imagekit.files.upload({
+    file: await toFile(Buffer.from(req.file.buffer), 'file'),
+    fileName: "Test",
+    folder: "Cohort-2-insta-clone"
+  })
+  const post = await postModel.create({
+    caption: req.body.caption,
+    imgUrl: file.url,
+    user: req.user.id
+  })
 
-    res.status(201).json({
-        message: "Post created successfully",
-        post
-    })
+  res.status(201).json({
+    message: "Post created successfully",
+    post
+  })
 }
 
 async function getPostController(req, res) {
 
-    const user = req.user.id
-    const posts = await postModel.find({
-        user: user
-    })
-    res.status(200).json({
-        message: "post fetched succesfully",
-        posts
-    })
+  const user = req.user.id
+  const posts = await postModel.find({
+    user: user
+  })
+  res.status(200).json({
+    message: "post fetched succesfully",
+    posts
+  })
 }
 
 async function getPostDetailsController(req, res) {
 
-    const userId = req.user.id
-    const postId = req.params.postId
+  const userId = req.user.id
+  const postId = req.params.postId
 
-    const post = await postModel.findById(postId)
-    if (!post) {
-        return res.status(404).json({
-            message: "post not found"
-        })
-    }
-
-    const isValidUser = post.user.toString() === userId
-    if (!isValidUser) {
-        return res.status(403).json({
-            message: "forbidden credentials"
-        })
-    }
-
-    res.status(200).json({
-        message: "post fetched successfully",
-        post
+  const post = await postModel.findById(postId)
+  if (!post) {
+    return res.status(404).json({
+      message: "post not found"
     })
+  }
+
+  const isValidUser = post.user.toString() === userId
+  if (!isValidUser) {
+    return res.status(403).json({
+      message: "forbidden credentials"
+    })
+  }
+
+  res.status(200).json({
+    message: "post fetched successfully",
+    post
+  })
 }
 
 async function likePostController(req, res) {
-    try {
-        const username = req.user.username
-        const postId = req.params.postId
+  try {
+    const username = req.user.username
+    const postId = req.params.postId
 
-        const post = await postModel.findById(postId)
+    const post = await postModel.findById(postId)
 
-        if (!post) {
-            return res.status(404).json({
-                message: "post not found"
-            })
-        }
-
-        const existingLike = await likeModel.findOne({ post: postId, user: username })
-        if (existingLike) {
-            return res.status(409).json({ message: "post already liked" })
-        }
-
-        const like = await likeModel.create({
-            post: postId,
-            user: username
-        })
-
-        res.status(201).json({
-            message: "post liked successfully",
-            like
-        })
-    } catch (err) {
-        console.error(err)
-        res.status(500).json({ message: "internal server error" })
+    if (!post) {
+      return res.status(404).json({
+        message: "post not found"
+      })
     }
+
+    const existingLike = await likeModel.findOne({ post: postId, user: username })
+    if (existingLike) {
+      return res.status(409).json({ message: "post already liked" })
+    }
+
+    const like = await likeModel.create({
+      post: postId,
+      user: username
+    })
+
+    res.status(201).json({
+      message: "post liked successfully",
+      like
+    })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: "internal server error" })
+  }
 }
 
 async function getFeedController(req, res) {
-    const posts = await postModel.find().populate("user").select("-user.password")
-    res.status(200).json({
-        message: "feed fetched successfully",
-        posts
-    })
+  const user = req.user
+  const posts = await Promise.all((await postModel.find().sort({_id:-1}).populate("user").select("-user.password").lean())
+    .map(async (post) => {
+      const isLiked = await likeModel.findOne({
+        user: user.username,
+        post: post._id.toString()
+      })
+      post.isLiked = !!isLiked 
+      return post
+    }))
+
+
+  res.status(200).json({
+    message: "feed fetched successfully",
+    posts
+  })
 }
 
 module.exports = {
-    createPostController,
-    getPostController,
-    getPostDetailsController,
-    likePostController,
-    getFeedController
+  createPostController,
+  getPostController,
+  getPostDetailsController,
+  likePostController,
+  getFeedController
 }

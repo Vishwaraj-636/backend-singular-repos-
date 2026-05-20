@@ -1,11 +1,17 @@
-import {RouterProvider} from "react-router";
-import {router} from "./app.routes"
+import { RouterProvider } from "react-router";
+import { router } from "./app.routes"
+import { AuthProvider } from "./features/auth/auth.context"
 import "./features/shared/global.scss"
+import { PostContextProvider } from "./features/post/post.context";
 
 function App() {
 
   return (
-    <RouterProvider router={router}/>
+    <AuthProvider>
+      <PostContextProvider>
+        <RouterProvider router={router} />
+      </PostContextProvider>
+    </AuthProvider>
   )
 }
 
