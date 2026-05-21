@@ -99,15 +99,30 @@ async function likePostController(req, res) {
   }
 }
 
+async function unLikePostController(req, res) {
+  const postId = req.params.postId
+  const username = req.user.username
+
+  const isLiked = await likeModel.findOne({
+    post: postId,
+    user: username
+  })
+  if (!isLiked) {
+    return res.status(400).json({ message: "post not liked" })
+  }
+  await likeModel.findOneAndDelete({ _id: isLiked._id })
+  res.status(200).json({ message: "post unliked successfully" })
+}
+
 async function getFeedController(req, res) {
   const user = req.user
-  const posts = await Promise.all((await postModel.find().sort({_id:-1}).populate("user").select("-user.password").lean())
+  const posts = await Promise.all((await postModel.find().sort({ _id: -1 }).populate("user").select("-user.password").lean())
     .map(async (post) => {
       const isLiked = await likeModel.findOne({
         user: user.username,
         post: post._id.toString()
       })
-      post.isLiked = !!isLiked 
+      post.isLiked = !!isLiked
       return post
     }))
 
@@ -118,10 +133,41 @@ async function getFeedController(req, res) {
   })
 }
 
+async function unLikePostController(req, res) {
+  try {
+    const username = req.user.username
+    const postId = req.params.postId
+
+    const post = await postModel.findById(postId)
+
+    if (!post) {
+      return res.status(404).json({
+        message: "post not found"
+      })
+    }
+
+    const like = await likeModel.findOneAndDelete({ post: postId, user: username })
+
+    if (!like) {
+      return res.status(404).json({
+        message: "post not liked"
+      })
+    }
+
+    res.status(200).json({
+      message: "post unliked successfully"
+    })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: "internal server error" })
+  }
+}
+
 module.exports = {
   createPostController,
   getPostController,
   getPostDetailsController,
   likePostController,
+  unLikePostController,
   getFeedController
 }

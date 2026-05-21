@@ -27,6 +27,7 @@ postRouter.get("/details/:postId", identifyUser, postController.getPostDetailsCo
 @desc like a post
 */
 postRouter.post("/like/:postId", identifyUser, postController.likePostController)
+postRouter.post("/unlike/:postId", identifyUser, postController.unLikePostController)
 
 /* 
 @routes get /api/post/feed
@@ -34,6 +35,6 @@ postRouter.post("/like/:postId", identifyUser, postController.likePostController
 @access private
 */
 
-postRouter.get("/feed",identifyUser, postController.getFeedController)
+postRouter.get("/feed", identifyUser, postController.getFeedController)
 
 module.exports = postRouter
