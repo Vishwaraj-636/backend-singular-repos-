@@ -11,6 +11,7 @@ frontend/dist-ssr/
 
 # Env files
 .env
+backend\.env
 .env.*
 backend/.env
 backend/.env.*
