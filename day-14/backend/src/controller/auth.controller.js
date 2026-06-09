@@ -45,12 +45,19 @@ async function registerUser(req, res) {
 }
 
 async function loginUser(req, res) {
-  const { username, email, password } = req.body;
+  const { identifier, username, email, password } = req.body;
+  const loginValue = (identifier || username || email || "").trim();
+
+  if (!loginValue || !password) {
+    return res.status(400).json({
+      message: "invalid credentials"
+    })
+  }
 
   const user = await userModel.findOne({
     $or: [
-      { email },
-      { username }
+      { email: loginValue },
+      { username: loginValue }
     ]
   }).select("+password")
 
