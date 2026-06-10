@@ -1,8 +1,8 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-// const blacklistModel = require("../models/blacklist.model")
-// const redis = require("../config/cache")
+const blacklistModel = require("../models/blacklist.model")
+const redis = require("../config/cache")
 
 async function registerUser(req, res) {
   const { username, email, password } = req.body;
@@ -88,17 +88,18 @@ async function loginUser(req, res) {
   })
 }
 
-async function getMe(req, res) {
-  const user = await userModel.findById(req.user.id)
-  res.status(200).json({
-    message: "user fetched successfully",
-    user
+
+async function logoutUser(req, res) {
+  const token = req.cookies.token
+  res.clearCookie("token")
+
+  redis.set(token,"blacklisted", "EX", 3 * 24 * 60 * 60)
+
+
+  return res.status(201).json({
+    message: "user logged out successfully"
   })
 }
-
-// async function logoutUser(req, res) {
-//   const token = req.cookies.token
-//   res.clearCookie("token")
 
 async function getMe(req, res) {
   const user = await userModel.findById(req.user.id)
@@ -112,6 +113,6 @@ module.exports = {
   registerUser,
   loginUser,
   getMe,
-  // logoutUser
+  logoutUser
 }
 
