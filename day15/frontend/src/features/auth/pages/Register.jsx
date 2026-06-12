@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "../style/register.scss"
+import "../style/auth.scss"
 import FormGroup from '../components/FormGroup';
 import { Link } from "react-router"
 import { useAuth } from "../hooks/useAuth"
@@ -20,7 +20,7 @@ const Register = () => {
   }
 
   return (
-    <main className='register-page'>
+    <main className='auth-page'>
       <div className="form-container">
         <h1>Register</h1>
         <form onSubmit={handleSubmit}>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "../style/login.scss"
+import "../style/auth.scss"
 import FormGroup from '../components/FormGroup';
 import { Link } from "react-router"
 import { useAuth } from "../hooks/useAuth"
@@ -22,7 +22,7 @@ const Login = () => {
   }
 
   return (
-    <main className='login-page'>
+    <main className='auth-page'>
       <div className="form-container">
         <h1>Login</h1>
         <form onSubmit={handleSubmit}>

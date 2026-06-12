@@ -3,10 +3,11 @@ import {
   FaceLandmarker,
   FilesetResolver,
 } from "@mediapipe/tasks-vision";
+import "./exp.scss"
 
 import { init, detect } from "../utils/utils";
 
-export default function FaceExpression() {
+export default function FaceExpression({ onClick = () => { } }) {
 
   const videoRef = useRef(null);
   const landmarkerRef = useRef(null);
@@ -14,7 +15,7 @@ export default function FaceExpression() {
   const streamRef = useRef(null);
 
 
-  
+
 
   useEffect(() => {
     init({ videoRef, landmarkerRef, streamRef });
@@ -30,23 +31,27 @@ export default function FaceExpression() {
 
   }, []);
 
+  async function handleClick() {
+    const expression = detect({ landmarkerRef, videoRef, setExpression })
+    onClick({ mood: expression })
+  }
 
   return (
-    <div style={{ textAlign: "center" }}>
+    <div className="face-card">
+      <h1>Moodify</h1>
 
-      <video
+      <video className="face-card video"
         ref={videoRef}
         autoPlay
         playsInline
-        style={{
-          width: "400px",
-          borderRadius: "12px",
-        }}
       />
 
-      <h2>{expression}</h2>
+      <div className="result">
+        {expression}
+      </div>
 
-      <button onClick={()=>{detect({ landmarkerRef, videoRef, setExpression })}}>
+
+      <button onClick={handleClick}>
         Detect Expression
       </button>
 
